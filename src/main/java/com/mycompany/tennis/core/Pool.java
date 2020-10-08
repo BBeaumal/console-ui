@@ -1,25 +1,26 @@
 package com.mycompany.tennis.core;
 
 
-import com.mysql.cj.jdbc.MysqlDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class rollback {
+public class Pool {
     public static void main(String... args) {
         Connection conn = null;
         try {
 
-            MysqlDataSource dataSource = new MysqlDataSource();
-            //dataSource.setURL("jdbc:mysql://localhost:3306/tennis?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=Europe/Paris");
-            dataSource.setServerName("localhost");
-            dataSource.setPort(3306);
-            dataSource.setDatabaseName("tennis");
-            dataSource.setUseSSL(false);
-            dataSource.setServerTimezone("Europe/Paris");
-            dataSource.setUser("root");
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setInitialSize(5);
+            dataSource.setUrl( "jdbc:mysql://localhost:3306/tennis?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=Europe/Paris");
+            //dataSource.setServerName("localhost");
+            //dataSource.setPort(3306);
+            //dataSource.setDatabaseName("tennis");
+            //dataSource.setUseSSL(false);
+            //dataSource.setServerTimezone("Europe/Paris");
+            dataSource.setUsername("root");
             dataSource.setPassword("root");
             conn = dataSource.getConnection();
             //MySQL driver MySQL Connector
