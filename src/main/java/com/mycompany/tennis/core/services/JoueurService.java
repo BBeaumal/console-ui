@@ -3,7 +3,7 @@ package com.mycompany.tennis.core.services;
 import com.mycompany.tennis.core.repository.JoueurRepositoryImpl;
 import com.mycompany.tennis.core.entity.Joueur;
 
-public class JoueurService {
+public class  JoueurService {
     private final JoueurRepositoryImpl joueurRepository;
 
     public JoueurService() {
