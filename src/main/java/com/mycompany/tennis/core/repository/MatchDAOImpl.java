@@ -1,14 +1,14 @@
-package com.mycompany.tennis.core.DAO;
+package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
-import com.mycompany.tennis.core.entity.Score;
+import com.mycompany.tennis.core.entity.Match;
 
 import javax.sql.DataSource;
 import java.sql.*;
 
-public class ScoreDAOImpl {
+public class MatchDAOImpl {
 
-    public void create(Score score) {
+    public void create(Match match) {
         Connection conn = null;
         try {
             DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
@@ -16,34 +16,23 @@ public class ScoreDAOImpl {
             conn = dataSource.getConnection();
 
             // Modification d'une donnée dans le tableau
-            String sql = "INSERT INTO SCORE_VAINQUEUR (ID_MATCH,SET_1, SET_2, SET_3, SET_4, SET_5) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO MATCH_TENNIS (ID_EPREUVE,ID_VAINQUEUR, ID_FINALISTE) VALUES (?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setLong(1, score.getMatch().getIdMatch());
-            preparedStatement.setByte(2, score.getSet1());
-            preparedStatement.setByte(3, score.getSet2());
-            preparedStatement.setByte(4, score.getSet3());
-            if (score.getSet4() == null) {
-                preparedStatement.setNull(5, Types.TINYINT);
-            } else {
-                preparedStatement.setByte(5, score.getSet4());
-            }
-            if (score.getSet5() == null) {
-                preparedStatement.setNull(6, Types.TINYINT);
-            } else {
-                preparedStatement.setByte(6, score.getSet5());
-            }
+            preparedStatement.setLong(1, match.getEpreuve().getIdEpreuve());
+            preparedStatement.setLong(2, match.getVainqueur().getIdJ());
+            preparedStatement.setLong(3, match.getFinaliste().getIdJ());
 
             preparedStatement.executeUpdate();
 
             //Récupère les infos autogénérées
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
-                score.setIdScore(rs.getLong(1));
+                match.setIdMatch(rs.getLong(1));
             }
 
 
-            System.out.println("Score créé avec succès");
+            System.out.println("Match créé avec succès");
         } catch (SQLException e) {
             e.printStackTrace();
             try {

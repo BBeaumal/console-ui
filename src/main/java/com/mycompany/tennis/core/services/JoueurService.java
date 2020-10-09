@@ -1,6 +1,6 @@
 package com.mycompany.tennis.core.services;
 
-import com.mycompany.tennis.core.DAO.JoueurDAOImpl;
+import com.mycompany.tennis.core.repository.JoueurDAOImpl;
 import com.mycompany.tennis.core.entity.Joueur;
 
 public class JoueurService {

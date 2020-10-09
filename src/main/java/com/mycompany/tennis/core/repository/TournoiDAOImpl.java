@@ -1,40 +1,38 @@
-package com.mycompany.tennis.core.DAO;
+package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
-import com.mycompany.tennis.core.entity.Joueur;
+import com.mycompany.tennis.core.entity.Tournoi;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JoueurDAOImpl {
+public class TournoiDAOImpl {
 
-    public void create(Joueur joueur) {
+    public void create(Tournoi tournoi) {
         Connection conn = null;
         try {
             DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
 
             conn = dataSource.getConnection();
 
-            // Modification d'une donnée dans le tableau
-            String sql = "INSERT INTO JOUEUR (NOM,PRENOM,SEXE) VALUES (?,?,?)";
+            String sql = "INSERT INTO TOURNOI (NOM,CODE) VALUES (?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setString(1, joueur.getNom());
-            preparedStatement.setString(2, joueur.getPrenom());
-            preparedStatement.setString(3, joueur.getSexe().toString());
+            preparedStatement.setString(1, tournoi.getNomTournoi());
+            preparedStatement.setString(2, tournoi.getCodeTournoi());
 
             preparedStatement.executeUpdate();
 
             //Récupère les infos autogénérées
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
-                joueur.setIdJ(rs.getLong(1));
+                tournoi.setIdTournoi(rs.getLong(1));
             }
 
 
-            System.out.println("Joueur créé avec succès");
+            System.out.println("Tournoi créé avec succès");
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -54,7 +52,7 @@ public class JoueurDAOImpl {
     }
 
 
-    public void update(Joueur joueur) {
+    public void update(Tournoi tournoi) {
         Connection conn = null;
         try {
             DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
@@ -62,18 +60,17 @@ public class JoueurDAOImpl {
             conn = dataSource.getConnection();
 
             // Modification d'une donnée dans le tableau
-            String sql = "UPDATE JOUEUR SET NOM=?, PRENOM=?, SEXE=? WHERE ID=?";
+            String sql = "UPDATE TOURNOI SET NOM=?, CODE=? WHERE ID=?";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-            preparedStatement.setString(1, joueur.getNom());
-            preparedStatement.setString(2, joueur.getPrenom());
-            preparedStatement.setString(3, joueur.getSexe().toString());
-            preparedStatement.setLong(4, joueur.getIdJ());
+            preparedStatement.setString(1, tournoi.getNomTournoi());
+            preparedStatement.setString(2, tournoi.getCodeTournoi());
+            preparedStatement.setLong(4, tournoi.getIdTournoi());
 
             preparedStatement.executeUpdate();
 
 
-            System.out.println("Joueur modifié avec succès");
+            System.out.println("Tournoi modifié avec succès");
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -92,7 +89,7 @@ public class JoueurDAOImpl {
         }
     }
 
-    public void delete(Long idJ) {
+    public void delete(Long idTournoi) {
         Connection conn = null;
         try {
             DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
@@ -100,15 +97,15 @@ public class JoueurDAOImpl {
             conn = dataSource.getConnection();
 
             // Modification d'une donnée dans le tableau
-            String sql = "DELETE FROM JOUEUR WHERE ID=?";
+            String sql = "DELETE FROM TOURNOI WHERE ID=?";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-            preparedStatement.setLong(1, idJ);
+            preparedStatement.setLong(1, idTournoi);
 
             preparedStatement.executeUpdate();
 
 
-            System.out.println("Joueur supprimé avec succès");
+            System.out.println("Tournoi supprimé avec succès");
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -127,31 +124,31 @@ public class JoueurDAOImpl {
         }
     }
 
-    public Joueur getById(Long idJ) {
+    public Tournoi getById(Long idTournoi) {
         Connection conn = null;
-        Joueur joueur = null;
+        Tournoi tournoi = null;
         try {
             DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
 
             conn = dataSource.getConnection();
 
             // Modification d'une donnée dans le tableau
-            String sql = "SELECT NOM, PRENOM, SEXE FROM JOUEUR WHERE ID=?";
+            String sql = "SELECT NOM, CODE FROM TOURNOI WHERE ID=?";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-            preparedStatement.setLong(1, idJ);
+            preparedStatement.setLong(1, idTournoi);
 
             ResultSet rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
-                joueur = new Joueur();
-                joueur.setIdJ(idJ);
-                joueur.setNom(rs.getString("NOM"));
-                joueur.setPrenom(rs.getString("PRENOM"));
-                joueur.setSexe(rs.getString("SEXE").charAt(0)); //possible car SEXE non null en BDD
+                tournoi = new Tournoi();
+                tournoi.setIdTournoi(idTournoi);
+                tournoi.setNomTournoi(rs.getString("NOM"));
+                tournoi.setCodeTournoi(rs.getString("CODE"));
+
             }
 
-            System.out.println("Joueur lu avec succès");
+            System.out.println("Tournoi lu avec succès");
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -168,33 +165,31 @@ public class JoueurDAOImpl {
                 e.printStackTrace();
             }
         }
-        return joueur;
+        return tournoi;
     }
 
-    public List<Joueur> getAll() {
+    public List<Tournoi> getAll() {
         Connection conn = null;
-        List<Joueur> joueurList = new ArrayList<>();
+        List<Tournoi> tournoiList = new ArrayList<>();
         try {
             DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
 
             conn = dataSource.getConnection();
 
-            // Modification d'une donnée dans le tableau
-            String sql = "SELECT ID, NOM, PRENOM, SEXE FROM JOUEUR";
+            String sql = "SELECT ID, NOM, CODE FROM TOURNOI";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                Joueur joueur = new Joueur();
-                joueur.setIdJ(rs.getLong("ID"));
-                joueur.setNom(rs.getString("NOM"));
-                joueur.setPrenom(rs.getString("PRENOM"));
-                joueur.setSexe(rs.getString("SEXE").charAt(0)); //possible car SEXE non null en BDD
-                joueurList.add(joueur);
+                Tournoi tournoi = new Tournoi();
+                tournoi.setIdTournoi(rs.getLong("ID"));
+                tournoi.setNomTournoi(rs.getString("NOM"));
+                tournoi.setCodeTournoi(rs.getString("CODE"));
+                tournoiList.add(tournoi);
             }
 
-            System.out.println("Liste de joueurs obtenue avec succès");
+            System.out.println("Liste de tournois obtenue avec succès");
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -211,6 +206,6 @@ public class JoueurDAOImpl {
                 e.printStackTrace();
             }
         }
-        return joueurList;
+        return tournoiList;
     }
 }

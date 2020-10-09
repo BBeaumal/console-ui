@@ -1,6 +1,6 @@
 package com.mycompany.tennis.core.services;
 
-import com.mycompany.tennis.core.DAO.TournoiDAOImpl;
+import com.mycompany.tennis.core.repository.TournoiDAOImpl;
 import com.mycompany.tennis.core.entity.Tournoi;
 
 public class TournoiService {

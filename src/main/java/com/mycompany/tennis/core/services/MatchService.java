@@ -1,7 +1,7 @@
 package com.mycompany.tennis.core.services;
 
-import com.mycompany.tennis.core.DAO.MatchDAOImpl;
-import com.mycompany.tennis.core.DAO.ScoreDAOImpl;
+import com.mycompany.tennis.core.repository.MatchDAOImpl;
+import com.mycompany.tennis.core.repository.ScoreDAOImpl;
 import com.mycompany.tennis.core.entity.Match;
 
 public class MatchService {
