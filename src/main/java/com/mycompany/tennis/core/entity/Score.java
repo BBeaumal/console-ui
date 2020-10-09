@@ -1,5 +1,8 @@
 package com.mycompany.tennis.core.entity;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Score {
     private Long idScore;
     private Byte set1;
