@@ -7,6 +7,7 @@ public class Score {
     private Byte set3;
     private Byte set4;
     private Byte set5;
+    private Match match;
 
     public Score() {
     }
@@ -68,6 +69,14 @@ public class Score {
         this.set5 = set5;
     }
 
+    public Match getMatch() {
+        return match;
+    }
+
+    public void setMatch(Match match) {
+        this.match = match;
+    }
+
     @Override
     public String toString() {
         return "Score{" +
@@ -77,6 +86,7 @@ public class Score {
                 ", set3=" + set3 +
                 ", set4=" + set4 +
                 ", set5=" + set5 +
+                ", match=" + match +
                 '}';
     }
 }

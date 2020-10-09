@@ -6,6 +6,7 @@ public class Match {
     private Joueur vainqueur;
     private Joueur finaliste;
     private Epreuve epreuve;
+    private Score score;
 
     public Match() {
     }
@@ -49,6 +50,14 @@ public class Match {
         this.epreuve = epreuve;
     }
 
+    public Score getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
+    }
+
     @Override
     public String toString() {
         return "Match{" +
@@ -56,6 +65,7 @@ public class Match {
                 ", vainqueur=" + vainqueur +
                 ", finaliste=" + finaliste +
                 ", epreuve=" + epreuve +
+                ", score=" + score +
                 '}';
     }
 }
