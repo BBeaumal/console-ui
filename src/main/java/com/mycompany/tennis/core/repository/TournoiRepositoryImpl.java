@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TournoiDAOImpl {
+public class TournoiRepositoryImpl {
 
     public void create(Tournoi tournoi) {
         Connection conn = null;

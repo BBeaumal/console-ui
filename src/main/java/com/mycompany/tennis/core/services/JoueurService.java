@@ -1,22 +1,21 @@
 package com.mycompany.tennis.core.services;
 
-import com.mycompany.tennis.core.repository.JoueurDAOImpl;
+import com.mycompany.tennis.core.repository.JoueurRepositoryImpl;
 import com.mycompany.tennis.core.entity.Joueur;
 
 public class JoueurService {
-    private JoueurDAOImpl joueurDAOImpl;
+    private final JoueurRepositoryImpl joueurRepository;
 
     public JoueurService() {
-        this.joueurDAOImpl = new JoueurDAOImpl();
+        this.joueurRepository = new JoueurRepositoryImpl();
     }
 
     public void createJoueur(Joueur joueur) {
-        joueurDAOImpl.create(joueur);
+        joueurRepository.create(joueur);
     }
 
     public Joueur getJoueur(Long idJ) {
-        Joueur joueur = joueurDAOImpl.getById(idJ);
-        return joueur;
+        return joueurRepository.getById(idJ);
     }
 
 }

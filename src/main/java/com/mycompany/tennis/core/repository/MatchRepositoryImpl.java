@@ -6,7 +6,7 @@ import com.mycompany.tennis.core.entity.Match;
 import javax.sql.DataSource;
 import java.sql.*;
 
-public class MatchDAOImpl {
+public class MatchRepositoryImpl {
 
     public void create(Match match) {
         Connection conn = null;

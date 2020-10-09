@@ -6,7 +6,7 @@ import com.mycompany.tennis.core.entity.Score;
 import javax.sql.DataSource;
 import java.sql.*;
 
-public class ScoreDAOImpl {
+public class ScoreRepositoryImpl {
 
     public void create(Score score) {
         Connection conn = null;

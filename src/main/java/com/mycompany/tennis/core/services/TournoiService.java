@@ -1,21 +1,20 @@
 package com.mycompany.tennis.core.services;
 
-import com.mycompany.tennis.core.repository.TournoiDAOImpl;
+import com.mycompany.tennis.core.repository.TournoiRepositoryImpl;
 import com.mycompany.tennis.core.entity.Tournoi;
 
 public class TournoiService {
-    private TournoiDAOImpl tournoiDAOImpl;
+    private final TournoiRepositoryImpl tournoiRepositoryImpl;
 
     public TournoiService() {
-        this.tournoiDAOImpl = new TournoiDAOImpl();
+        this.tournoiRepositoryImpl = new TournoiRepositoryImpl();
     }
 
     public void createTournoi(Tournoi tournoi) {
-        tournoiDAOImpl.create(tournoi);
+        tournoiRepositoryImpl.create(tournoi);
     }
 
     public Tournoi getTournoi(Long idT) {
-        Tournoi tournoi = tournoiDAOImpl.getById(idT);
-        return tournoi;
+        return tournoiRepositoryImpl.getById(idT);
     }
 }
