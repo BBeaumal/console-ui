@@ -1,7 +1,9 @@
 package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
+import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
+import org.hibernate.Session;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -128,44 +130,19 @@ public class JoueurRepositoryImpl {
     }
 
     public Joueur getById(Long idJ) {
-        Connection conn = null;
+
         Joueur joueur = null;
+        Session session = null;
+
         try {
-            DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-
-            conn = dataSource.getConnection();
-
-            // Modification d'une donnée dans le tableau
-            String sql = "SELECT NOM, PRENOM, SEXE FROM JOUEUR WHERE ID=?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-
-            preparedStatement.setLong(1, idJ);
-
-            ResultSet rs = preparedStatement.executeQuery();
-
-            if (rs.next()) {
-                joueur = new Joueur();
-                joueur.setIdJ(idJ);
-                joueur.setNom(rs.getString("NOM"));
-                joueur.setPrenom(rs.getString("PRENOM"));
-                joueur.setSexe(rs.getString("SEXE").charAt(0)); //possible car SEXE non null en BDD
-            }
-
+            session = HibernateUtil.getSessionFactory().openSession();
+            joueur = session.get(Joueur.class, idJ);
             System.out.println("Joueur lu avec succès");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+        } catch (Throwable t) {
+            t.printStackTrace();
         } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (session != null) {
+                session.close();
             }
         }
         return joueur;

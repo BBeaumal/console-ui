@@ -2,7 +2,7 @@ package com.mycompany.tennis.core.entity;
 
 import javax.persistence.*;
 
-@Entity(name = "TOURNOI")
+@Entity
 public class Tournoi {
 
     @Id
