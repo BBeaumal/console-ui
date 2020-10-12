@@ -1,10 +1,20 @@
 package com.mycompany.tennis.core.entity;
 
-public class Epreuve {
+import org.hibernate.annotations.Type;
 
+import javax.persistence.*;
+
+@Entity
+public class Epreuve {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long idEpreuve;
+    @Type(type = "short")
     private Short annee;
+    @Transient
     private Tournoi tournoi;
+    @Column(name = "TYPE_EPREUVE", nullable = true, length = 200)
     private Character typeEpreuve;
 
     public Epreuve() {
