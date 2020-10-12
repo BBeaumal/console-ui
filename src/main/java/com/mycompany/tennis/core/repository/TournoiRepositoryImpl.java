@@ -73,8 +73,7 @@ public class TournoiRepositoryImpl {
     }
 
     public void delete(Long idTournoi) {
-        Tournoi tournoi = new Tournoi();
-        tournoi.setIdTournoi(idTournoi);
+        Tournoi tournoi = getById(idTournoi);
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.delete(tournoi);
         System.out.println("Tournoi supprimé avec succès");

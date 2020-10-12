@@ -39,6 +39,30 @@ public class JoueurRepositoryImpl {
         }
     }
 
+    public void changeSexe(Long idJ, char nouveauSexe) {
+        Joueur joueur = null;
+        Session session = null;
+        Transaction tx = null;
+
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+//            joueur = session.get(Joueur.class, idJ);
+            Joueur joueurPersistent = (Joueur) session.merge(joueur);
+            joueur.setSexe(nouveauSexe);
+            System.out.println(" Sexe du joueur modifié ");
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 
     public void renameJoueur(Long idJ, String nouveauNom) {
         Joueur joueur = null;
@@ -48,7 +72,8 @@ public class JoueurRepositoryImpl {
         try {
             session = HibernateUtil.getSessionFactory().getCurrentSession();
             tx = session.beginTransaction();
-            joueur = session.get(Joueur.class, idJ);
+//            joueur = session.get(Joueur.class, idJ);
+            Joueur joueurPersistent = (Joueur) session.merge(joueur);
             joueur.setNom(nouveauNom);
             System.out.println(" Nom du joueur modifié ");
             tx.commit();
@@ -65,8 +90,7 @@ public class JoueurRepositoryImpl {
     }
 
     public void delete(Long idJ) {
-        Joueur joueur = new Joueur();
-        joueur.setIdJ(idJ);
+        Joueur joueur = getById(idJ);
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.delete(joueur);
         System.out.println("Joueur supprimé avec succès");

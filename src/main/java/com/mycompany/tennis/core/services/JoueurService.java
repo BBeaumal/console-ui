@@ -102,6 +102,32 @@ public class JoueurService {
             }
         }
     }
+
+    public void changeSexe(Long idJ, Character newSexe) {
+//        joueurRepository.renameJoueur(idJ, nouveauNom);
+        Joueur joueur = getJoueur(idJ);
+
+        Session session = null;
+        Transaction tx = null;
+
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+
+            joueur.setSexe(newSexe);
+            Joueur joueur2 = (Joueur) session.merge(joueur);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 }
 
 
