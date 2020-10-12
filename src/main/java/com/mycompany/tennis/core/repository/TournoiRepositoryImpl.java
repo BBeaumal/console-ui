@@ -4,6 +4,7 @@ import com.mycompany.tennis.core.DataSourceProvider;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Tournoi;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -13,12 +14,19 @@ import java.util.List;
 public class TournoiRepositoryImpl {
 
     public void create(Tournoi tournoi) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        Session session = null;
+        Transaction tx = null;
         try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
             session.persist(tournoi);
+            tx.commit();
             System.out.println("Tournoi créé avec succès");
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
         } finally {
             if (session != null) {
                 session.close();
