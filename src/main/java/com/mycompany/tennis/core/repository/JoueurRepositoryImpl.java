@@ -4,6 +4,7 @@ import com.mycompany.tennis.core.DataSourceProvider;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -13,44 +14,24 @@ import java.util.List;
 public class JoueurRepositoryImpl {
 
     public void create(Joueur joueur) {
-        Connection conn = null;
+        Session session = null;
+        Transaction tx = null;
+
         try {
-            DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-
-            conn = dataSource.getConnection();
-
-            // Modification d'une donnée dans le tableau
-            String sql = "INSERT INTO JOUEUR (NOM,PRENOM,SEXE) VALUES (?,?,?)";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-            preparedStatement.setString(1, joueur.getNom());
-            preparedStatement.setString(2, joueur.getPrenom());
-            preparedStatement.setString(3, joueur.getSexe().toString());
-
-            preparedStatement.executeUpdate();
-
-            //Récupère les infos autogénérées
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                joueur.setIdJ(rs.getLong(1));
-            }
-
+            session = HibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+            session.persist(joueur);
+            tx.commit(); //declenche l'ajout d'un ou plusieurs elements -> synchronisation de la session et de la BDD
 
             System.out.println("Joueur créé avec succès");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
             }
+            e.printStackTrace();
         } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (session != null) {
+                session.close();
             }
         }
     }
