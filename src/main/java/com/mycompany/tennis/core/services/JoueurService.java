@@ -78,6 +78,7 @@ public class JoueurService {
     }
 
     public void renameJoueur(Long idJ, String nouveauNom) {
+//        joueurRepository.renameJoueur(idJ, nouveauNom);
         Joueur joueur = getJoueur(idJ);
 
         Session session = null;
