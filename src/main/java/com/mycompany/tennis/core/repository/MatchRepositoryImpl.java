@@ -1,7 +1,9 @@
 package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
+import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Match;
+import org.hibernate.Session;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -125,50 +127,12 @@ public class MatchRepositoryImpl {
 //        }
 //    }
 
-//    public Match getById(Long idMatch) {
-//        Connection conn = null;
-//        Match match = null;
-//        try {
-//            DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-//
-//            conn = dataSource.getConnection();
-//
-//            // Modification d'une donnée dans le tableau
-//            String sql = "SELECT NOM, PRENOM, SEXE FROM MATCH WHERE ID=?";
-//            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-//
-//            preparedStatement.setLong(1, idMatch);
-//
-//            ResultSet rs = preparedStatement.executeQuery();
-//
-//            if (rs.next()) {
-//                match = new Match();
-//                match.setIdMatch(idMatch);
-//                match.setEpreuve(rs.getString("EPREUVE"));
-//                match.setFinaliste(rs.getString("PRENOM"));
-//                match.setScore(rs.getString("SEXE").charAt(0)); //possible car SEXE non null en BDD
-//                match.setVainqueur(rs.);
-//            }
-//
-//            System.out.println("Match lu avec succès");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            try {
-//                if (conn != null) conn.rollback();
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            }
-//        } finally {
-//            try {
-//                if (conn != null) {
-//                    conn.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return match;
-//    }
+    public Match getById(Long idMatch) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Match match = session.get(Match.class, idMatch);
+        System.out.println("Match lu avec succès");
+        return match;
+    }
 
 //    public List<Match> getAll() {
 //        Connection conn = null;
