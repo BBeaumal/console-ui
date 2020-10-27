@@ -2,13 +2,17 @@ package com.mycompany.tennis.core.services;
 
 import com.mycompany.tennis.core.DTO.EpreuveFullDTO;
 import com.mycompany.tennis.core.DTO.EpreuveLightDTO;
+import com.mycompany.tennis.core.DTO.JoueurDTO;
 import com.mycompany.tennis.core.DTO.TournoiDTO;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Epreuve;
+import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.repository.EpreuveRepositoryImpl;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import java.util.HashSet;
 
 public class EpreuveService {
     private final EpreuveRepositoryImpl epreuveRepositoryImpl;
@@ -17,7 +21,7 @@ public class EpreuveService {
         this.epreuveRepositoryImpl = new EpreuveRepositoryImpl();
     }
 
-    public EpreuveFullDTO getEpreuve(Long idE) {
+    public EpreuveFullDTO getEpreuveDetaillee(Long idE) {
         Session session = null;
         Transaction tx = null;
         Epreuve epreuve = null;
@@ -32,7 +36,7 @@ public class EpreuveService {
             System.out.println("L'identifiant du tournoi est " + epreuve.getTournoi().getIdTournoi());
             /*System.out.println("L'epreuve selectionnee se deroule en " + epreuve.getAnnee() + " et il s'agit d'une epreuve "
                     + epreuve.getTournoi().getNomTournoi());*/
-           //Chargement des données de tournoi
+            //Chargement des données de tournoi
             Hibernate.initialize(epreuve.getTournoi());
             tx.commit();
             dto = new EpreuveFullDTO();
@@ -46,6 +50,16 @@ public class EpreuveService {
             tournoiDTO.setCodeTournoi(epreuve.getTournoi().getCodeTournoi());
 
             dto.setTournoi(tournoiDTO);
+
+            dto.setParticipants(new HashSet<>());
+            for (Joueur joueur : epreuve.getParticipants()) {
+                final JoueurDTO joueurDTO = new JoueurDTO();
+                joueurDTO.setIdJ(joueur.getIdJ());
+                joueurDTO.setPrenom(joueur.getPrenom());
+                joueurDTO.setNom(joueur.getNom());
+                joueurDTO.setSexe(joueur.getSexe());
+                dto.getParticipants().add(joueurDTO);
+            }
         } catch (Exception e) {
             if (tx != null) {
                 tx.rollback();

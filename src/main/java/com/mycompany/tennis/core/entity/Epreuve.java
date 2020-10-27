@@ -3,6 +3,7 @@ package com.mycompany.tennis.core.entity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Epreuve {
@@ -17,6 +18,12 @@ public class Epreuve {
     private Tournoi tournoi;
     @Column(name = "TYPE_EPREUVE", nullable = true, length = 200)
     private Character typeEpreuve;
+    @ManyToMany
+    @JoinTable(name = "PARTICIPANTS",
+            //Relation avec la classe d'origine
+            joinColumns = {@JoinColumn(name = "ID_EPREUVE")},
+            inverseJoinColumns = {@JoinColumn(name = "ID_JOUEUR")})
+    private Set<Joueur> participants;
 
     public Epreuve() {
     }
@@ -58,6 +65,14 @@ public class Epreuve {
 
     public void setTypeEpreuve(Character typeEpreuve) {
         this.typeEpreuve = typeEpreuve;
+    }
+
+    public Set<Joueur> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<Joueur> participants) {
+        this.participants = participants;
     }
 
     @Override

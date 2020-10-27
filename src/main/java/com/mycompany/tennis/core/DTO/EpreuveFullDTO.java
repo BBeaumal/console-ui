@@ -1,11 +1,13 @@
 package com.mycompany.tennis.core.DTO;
 
+import java.util.Set;
+
 public class EpreuveFullDTO {
     private Long idEpreuve;
     private Short annee;
     private TournoiDTO tournoi;
     private Character typeEpreuve;
-
+    private Set<JoueurDTO> participants;
 
     public Long getIdEpreuve() {
         return idEpreuve;
@@ -37,5 +39,13 @@ public class EpreuveFullDTO {
 
     public void setTypeEpreuve(Character typeEpreuve) {
         this.typeEpreuve = typeEpreuve;
+    }
+
+    public Set<JoueurDTO> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<JoueurDTO> participants) {
+        this.participants = participants;
     }
 }
