@@ -1,7 +1,9 @@
 package com.mycompany.tennis.core.services;
 
+import com.mycompany.tennis.core.DTO.EpreuveFullDTO;
 import com.mycompany.tennis.core.DTO.JoueurDTO;
 import com.mycompany.tennis.core.DTO.MatchDTO;
+import com.mycompany.tennis.core.DTO.TournoiDTO;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Match;
 import com.mycompany.tennis.core.repository.MatchRepositoryImpl;
@@ -37,23 +39,36 @@ public class MatchService {
             tx = session.beginTransaction();
             match = matchRepository.getById(idM);
 
+            dto = new MatchDTO();
+
             JoueurDTO finalisteDTO = new JoueurDTO();
             finalisteDTO.setIdJ(match.getFinaliste().getIdJ());
             finalisteDTO.setNom(match.getFinaliste().getNom());
             finalisteDTO.setPrenom(match.getFinaliste().getPrenom());
             finalisteDTO.setSexe(match.getFinaliste().getSexe());
-            dto = new MatchDTO();
 
             JoueurDTO vainqueurDTO = new JoueurDTO();
             vainqueurDTO.setIdJ(match.getVainqueur().getIdJ());
             vainqueurDTO.setNom(match.getVainqueur().getNom());
             vainqueurDTO.setPrenom(match.getVainqueur().getPrenom());
             vainqueurDTO.setSexe(match.getVainqueur().getSexe());
-            dto = new MatchDTO();
+
+            EpreuveFullDTO epreuvedto = new EpreuveFullDTO();
+            epreuvedto.setIdEpreuve(match.getEpreuve().getIdEpreuve());
+            epreuvedto.setAnnee(match.getEpreuve().getAnnee());
+            epreuvedto.setTypeEpreuve(match.getEpreuve().getTypeEpreuve());
+
+            TournoiDTO tournoiDTO = new TournoiDTO();
+            tournoiDTO.setIdTournoi(match.getEpreuve().getTournoi().getIdTournoi());
+            tournoiDTO.setNomTournoi(match.getEpreuve().getTournoi().getNomTournoi());
+            tournoiDTO.setCodeTournoi(match.getEpreuve().getTournoi().getCodeTournoi());
+            epreuvedto.setTournoi(tournoiDTO);
 
             dto.setIdMatch(match.getIdMatch());
             dto.setFinaliste(finalisteDTO);
             dto.setVainqueur(vainqueurDTO);
+            dto.setEpreuve(epreuvedto);
+
 
             tx.commit();
         } catch (Exception e) {

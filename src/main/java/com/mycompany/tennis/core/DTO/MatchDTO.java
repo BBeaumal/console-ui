@@ -10,8 +10,8 @@ public class MatchDTO {
 
     private Long idMatch;
     private JoueurDTO vainqueur;
-
     private JoueurDTO finaliste;
+    private EpreuveFullDTO epreuve;
 
     public Long getIdMatch() {
         return idMatch;
@@ -37,6 +37,13 @@ public class MatchDTO {
         this.finaliste = finaliste;
     }
 
+    public EpreuveFullDTO getEpreuve() {
+        return epreuve;
+    }
+
+    public void setEpreuve(EpreuveFullDTO epreuve) {
+        this.epreuve = epreuve;
+    }
 
     @Override
     public String toString() {
