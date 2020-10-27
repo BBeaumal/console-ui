@@ -12,7 +12,8 @@ public class Epreuve {
     private Long idEpreuve;
     @Type(type = "short")
     private Short annee;
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_TOURNOI")
     private Tournoi tournoi;
     @Column(name = "TYPE_EPREUVE", nullable = true, length = 200)
     private Character typeEpreuve;
