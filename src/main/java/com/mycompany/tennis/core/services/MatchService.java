@@ -2,6 +2,7 @@ package com.mycompany.tennis.core.services;
 
 import com.mycompany.tennis.core.DTO.*;
 import com.mycompany.tennis.core.HibernateUtil;
+import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.entity.Match;
 import com.mycompany.tennis.core.repository.MatchRepositoryImpl;
 import com.mycompany.tennis.core.repository.ScoreRepositoryImpl;
@@ -24,6 +25,39 @@ public class MatchService {
         matchRepository.create(match);
         scoreRepository.create(match.getScore());
 //        matchDAO.createMatchScore(match);
+    }
+
+    public void tapisVert(Long idM) {
+        Session session = null;
+        Transaction tx = null;
+        Match match = null;
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+            match = matchRepository.getById(idM);
+
+            Joueur ancienVainqueur = match.getVainqueur();
+            match.setVainqueur(match.getFinaliste());
+            match.setFinaliste(ancienVainqueur);
+
+            match.getScore().setSet1((byte) 0);
+            match.getScore().setSet2((byte) 0);
+            match.getScore().setSet3((byte) 0);
+            match.getScore().setSet4((byte) 0);
+            match.getScore().setSet5((byte) 0);
+
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     public MatchDTO getMatch(Long idM) {
