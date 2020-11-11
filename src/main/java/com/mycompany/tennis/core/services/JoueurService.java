@@ -91,6 +91,39 @@ public class JoueurService {
         return joueursDTO;
     }
 
+    public List<JoueurDTO> getListeParamJoueurs(char sexe) {
+        Session session = null;
+        Transaction tx = null;
+        List<JoueurDTO> joueursDTO = new ArrayList<>();
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+            List<Joueur> joueurList = joueurRepository.getAllBySexe(sexe);
+
+            for (Joueur joueur : joueurList) {
+                JoueurDTO joueurDTO = new JoueurDTO();
+                joueurDTO.setIdJ(joueur.getIdJ());
+                joueurDTO.setSexe(joueur.getSexe());
+                joueurDTO.setNom(joueur.getNom());
+                joueurDTO.setPrenom(joueur.getPrenom());
+
+                joueursDTO.add(joueurDTO);
+            }
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return joueursDTO;
+    }
+
 
     public Joueur getJoueur(Long idJ) {
         Session session = null;
