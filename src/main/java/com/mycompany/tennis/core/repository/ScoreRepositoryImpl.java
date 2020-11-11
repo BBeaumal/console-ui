@@ -8,86 +8,21 @@ import org.hibernate.Transaction;
 public class ScoreRepositoryImpl {
 
     public void create(Score score) {
-
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.persist(score);
+        System.out.println("Score ajouté");
     }
 
-
-//    public void update(Match match) {
-//        Connection conn = null;
-//        try {
-//            DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-//
-//            conn = dataSource.getConnection();
-//
-//            // Modification d'une donnée dans le tableau
-//            String sql = "UPDATE Match SET NOM=?, PRENOM=?, SEXE=? WHERE ID=?";
-//            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-//
-//            preparedStatement.setString(1, match.getNom());
-//            preparedStatement.setString(2, match.getPrenom());
-//            preparedStatement.setString(3, match.getSexe().toString());
-//            preparedStatement.setLong(4, match.getIdJ());
-//
-//            preparedStatement.executeUpdate();
-//
-//
-//            System.out.println("Match modifié avec succès");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            try {
-//                if (conn != null) conn.rollback();
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            }
-//        } finally {
-//            try {
-//                if (conn != null) {
-//                    conn.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-//    public void delete(Long idMatch) {
-//        Connection conn = null;
-//        try {
-//            DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-//
-//            conn = dataSource.getConnection();
-//
-//            // Modification d'une donnée dans le tableau
-//            String sql = "DELETE FROM MATCH WHERE ID=?";
-//            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-//
-//            preparedStatement.setLong(1, idMatch);
-//
-//            preparedStatement.executeUpdate();
-//
-//
-//            System.out.println("Match supprimé avec succès");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            try {
-//                if (conn != null) conn.rollback();
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            }
-//        } finally {
-//            try {
-//                if (conn != null) {
-//                    conn.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    public void delete(Long idS) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        Score score = session.get(Score.class, idS);
+        session.delete(score);
+        System.out.println("Score supprimé");
+    }
 
     public Score getById(Long idScore) {
 
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         Transaction tx = null;
         Score score = session.get(Score.class, idScore);
         System.out.println("Score lu avec succès");

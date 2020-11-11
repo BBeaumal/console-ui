@@ -17,7 +17,7 @@ public class TournoiRepositoryImpl {
         Session session = null;
         Transaction tx = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
             tx = session.beginTransaction();
             session.persist(tournoi);
             tx.commit();
@@ -73,14 +73,15 @@ public class TournoiRepositoryImpl {
     }
 
     public void delete(Long idTournoi) {
-        Tournoi tournoi = getById(idTournoi);
+
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        Tournoi tournoi = session.get(Tournoi.class, idTournoi);
         session.delete(tournoi);
         System.out.println("Tournoi supprimé avec succès");
     }
 
     public Tournoi getById(Long idTournoi) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         Tournoi tournoi = null;
         try {
             tournoi = session.get(Tournoi.class, idTournoi);

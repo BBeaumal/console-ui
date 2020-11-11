@@ -4,6 +4,9 @@ import com.mycompany.tennis.core.DTO.*;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.entity.Match;
+import com.mycompany.tennis.core.entity.Score;
+import com.mycompany.tennis.core.repository.EpreuveRepositoryImpl;
+import com.mycompany.tennis.core.repository.JoueurRepositoryImpl;
 import com.mycompany.tennis.core.repository.MatchRepositoryImpl;
 import com.mycompany.tennis.core.repository.ScoreRepositoryImpl;
 import org.hibernate.Session;
@@ -13,18 +16,81 @@ public class MatchService {
 
     private ScoreRepositoryImpl scoreRepository;
     private MatchRepositoryImpl matchRepository;
+    private EpreuveRepositoryImpl epreuveRepository;
+    private JoueurRepositoryImpl joueurRepository;
 //    private MatchDAO matchDAO;
 
     public MatchService() {
         this.scoreRepository = new ScoreRepositoryImpl();
         this.matchRepository = new MatchRepositoryImpl();
+        this.epreuveRepository = new EpreuveRepositoryImpl();
+        this.joueurRepository = new JoueurRepositoryImpl();
 //        this.matchDAO = new MatchDAO();
+    }
+
+    public void deleteMatch(Long idM) {
+        Session session = null;
+        Transaction tx = null;
+        Match match = null;
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+
+            matchRepository.delete(idM);
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     public void enregistrerNouveauMatch(Match match) {
         matchRepository.create(match);
         scoreRepository.create(match.getScore());
 //        matchDAO.createMatchScore(match);
+    }
+
+    public void createMatch(MatchDTO matchDTO) {
+        Session session = null;
+        Transaction tx = null;
+        Match match = null;
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+
+            match = new Match();
+            match.setEpreuve(epreuveRepository.getById(matchDTO.getEpreuve().getIdEpreuve()));
+            match.setVainqueur(joueurRepository.getById(matchDTO.getVainqueur().getIdJ()));
+            match.setFinaliste(joueurRepository.getById(matchDTO.getFinaliste().getIdJ()));
+            Score score = new Score();
+            score.setMatch(match);
+            match.setScore(score);
+            score.setSet1(matchDTO.getScore().getSet1());
+            score.setSet2(matchDTO.getScore().getSet2());
+            score.setSet3(matchDTO.getScore().getSet3());
+            score.setSet4(matchDTO.getScore().getSet4());
+            score.setSet5(matchDTO.getScore().getSet5());
+
+            matchRepository.create(match);
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     public void tapisVert(Long idM) {

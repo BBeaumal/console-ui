@@ -15,6 +15,29 @@ public class ScoreService {
         this.scoreRepositoryImpl = new ScoreRepositoryImpl();
     }
 
+    public void deleteScore(Long idS) {
+        Session session = null;
+        Transaction tx = null;
+        Score score = null;
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+
+            scoreRepositoryImpl.delete(idS);
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
     public Score getScore(Long idS) {
         Session session = null;
         Transaction tx = null;
