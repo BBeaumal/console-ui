@@ -20,7 +20,7 @@ public class EpreuveRepositoryImpl {
     public List<Epreuve> getAll(String codeTournoi) {
 
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        Query<Epreuve> query = session.createQuery("select e from Epreuve e where e.tournoi.codeTournoi=?0", Epreuve.class);
+        Query<Epreuve> query = session.createQuery("select e from Epreuve e join fetch e.tournoi where e.tournoi.codeTournoi=?0", Epreuve.class);
         query.setParameter(0, codeTournoi);
         List<Epreuve> epreuves = query.getResultList();
         System.out.println("Liste d'épreuves obtenue avec succès");
