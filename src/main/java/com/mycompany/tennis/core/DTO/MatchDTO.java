@@ -1,10 +1,5 @@
 package com.mycompany.tennis.core.DTO;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "MATCH_TENNIS")
 public class MatchDTO {
 
 
