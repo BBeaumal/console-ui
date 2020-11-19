@@ -6,17 +6,17 @@ import javax.persistence.Persistence;
 
 
 public class EntityManagerHolder {
-    private final ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();
     private static EntityManagerFactory entityManagerFactory = buildEntityManagerFactory();
 
-    private static EntityManagerFactory buildEntityManagerFactory(){
+    private static EntityManagerFactory buildEntityManagerFactory() {
         return Persistence.createEntityManagerFactory("tennis-unit");
     }
 
     /**
      * @return The {@link EntityManager} linked to this thread
      */
-    public EntityManager getCurrentEntityManager() {
+    public static EntityManager getCurrentEntityManager() {
         EntityManager entityManager = entityManagerThreadLocal.get();
 
         if (entityManager == null) {
