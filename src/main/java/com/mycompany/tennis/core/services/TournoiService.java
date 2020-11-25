@@ -2,11 +2,8 @@ package com.mycompany.tennis.core.services;
 
 import com.mycompany.tennis.core.DTO.TournoiDTO;
 import com.mycompany.tennis.core.EntityManagerHolder;
-import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Tournoi;
 import com.mycompany.tennis.core.repository.TournoiRepositoryImpl;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -19,15 +16,16 @@ public class TournoiService {
     }
 
     public void createTournoi(TournoiDTO dto) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em = EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
             Tournoi tournoi = new Tournoi();
             tournoi.setIdTournoi(dto.getIdTournoi());
             tournoi.setNomTournoi(dto.getNomTournoi());
-            tournoi.setCodeTournoi(dto.getNomTournoi());
+            tournoi.setCodeTournoi(dto.getCodeTournoi());
             tournoiRepositoryImpl.create(tournoi);
             tx.commit();
         } catch (Exception e) {
@@ -36,18 +34,19 @@ public class TournoiService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     public void deleteTournoi(Long idT) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em = EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
             tournoiRepositoryImpl.delete(idT);
             tx.commit();
         } catch (Exception e) {
@@ -56,8 +55,8 @@ public class TournoiService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
@@ -70,7 +69,7 @@ public class TournoiService {
         TournoiDTO tournoiDTO = null;
         try {
 //            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            em = new EntityManagerHolder().getCurrentEntityManager();
+            em = EntityManagerHolder.getCurrentEntityManager();
             tx = em.getTransaction();
             tx.begin();
             tournoi = tournoiRepositoryImpl.getById(idT);

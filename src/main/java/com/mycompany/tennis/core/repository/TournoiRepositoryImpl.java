@@ -2,26 +2,28 @@ package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
 import com.mycompany.tennis.core.EntityManagerHolder;
-import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Tournoi;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TournoiRepositoryImpl {
 
     public void create(Tournoi tournoi) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        EntityTransaction tx = null;
+
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
-            session.persist(tournoi);
+
+            tx = em.getTransaction();
+            em.persist(tournoi);
             tx.commit();
             System.out.println("Tournoi créé avec succès");
         } catch (Exception e) {
@@ -30,8 +32,8 @@ public class TournoiRepositoryImpl {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
@@ -76,9 +78,13 @@ public class TournoiRepositoryImpl {
 
     public void delete(Long idTournoi) {
 
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        Tournoi tournoi = session.get(Tournoi.class, idTournoi);
-        session.delete(tournoi);
+//        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+//        tournoi = session.get(Tournoi.class, idTournoi);
+//        session.delete(tournoi);
+
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        Tournoi tournoi = em.find(Tournoi.class, idTournoi);
+        em.remove(tournoi);
         System.out.println("Tournoi supprimé avec succès");
     }
 

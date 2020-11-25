@@ -1,23 +1,30 @@
 package com.mycompany.tennis.core.repository;
 
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.List;
 
 public class JoueurRepositoryImpl {
 
     public void create(Joueur joueur) {
-        Session session = null;
-        Transaction tx = null;
+//        Session session = null;
+//        Transaction tx = null;
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        EntityTransaction tx = null;
 
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
-            session.persist(joueur);
+//            session = HibernateUtil.getSessionFactory().getCurrentSession();
+//            tx = session.beginTransaction();
+//            session.persist(joueur);
+            tx = em.getTransaction();
+            em.persist(joueur);
             tx.commit(); //declenche l'ajout d'un ou plusieurs elements -> synchronisation de la session et de la BDD
 
             System.out.println("Joueur créé avec succès");
@@ -27,8 +34,8 @@ public class JoueurRepositoryImpl {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
