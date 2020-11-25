@@ -5,13 +5,10 @@ import com.mycompany.tennis.core.DTO.EpreuveLightDTO;
 import com.mycompany.tennis.core.DTO.JoueurDTO;
 import com.mycompany.tennis.core.DTO.TournoiDTO;
 import com.mycompany.tennis.core.EntityManagerHolder;
-import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Epreuve;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.repository.EpreuveRepositoryImpl;
 import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -27,13 +24,14 @@ public class EpreuveService {
     }
 
     public EpreuveFullDTO getEpreuveDetaillee(Long idE) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         Epreuve epreuve = null;
         EpreuveFullDTO dto = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em=EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
             epreuve = epreuveRepositoryImpl.getById(idE);
 /*
             System.out.println("la classe de la propriete tournoi est " + epreuve.getTournoi().getClass().getName());
@@ -71,21 +69,23 @@ public class EpreuveService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
         return dto;
     }
 
     public EpreuveLightDTO getEpreuveSansTournoi(Long idE) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
+
         Epreuve epreuve = null;
         EpreuveLightDTO dto = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em= new EntityManagerHolder().getCurrentEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
             epreuve = epreuveRepositoryImpl.getById(idE);
             tx.commit();
             dto = new EpreuveLightDTO();
@@ -99,8 +99,8 @@ public class EpreuveService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
         return dto;
