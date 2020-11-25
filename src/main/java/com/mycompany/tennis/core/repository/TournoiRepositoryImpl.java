@@ -6,12 +6,11 @@ import com.mycompany.tennis.core.entity.Tournoi;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TournoiRepositoryImpl {
@@ -78,10 +77,6 @@ public class TournoiRepositoryImpl {
 
     public void delete(Long idTournoi) {
 
-//        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-//        tournoi = session.get(Tournoi.class, idTournoi);
-//        session.delete(tournoi);
-
         EntityManager em = EntityManagerHolder.getCurrentEntityManager();
         Tournoi tournoi = em.find(Tournoi.class, idTournoi);
         em.remove(tournoi);
@@ -98,43 +93,11 @@ public class TournoiRepositoryImpl {
     }
 
     public List<Tournoi> getAll() {
-        Connection conn = null;
-        List<Tournoi> tournoiList = new ArrayList<>();
-        try {
-            DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-
-            conn = dataSource.getConnection();
-
-            String sql = "SELECT ID, NOM, CODE FROM TOURNOI";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                Tournoi tournoi = new Tournoi();
-                tournoi.setIdTournoi(rs.getLong("ID"));
-                tournoi.setNomTournoi(rs.getString("NOM"));
-                tournoi.setCodeTournoi(rs.getString("CODE"));
-                tournoiList.add(tournoi);
-            }
-
-            System.out.println("Liste de tournois obtenue avec succès");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        TypedQuery<Tournoi> query = em.createQuery("select t from Tournoi t  ", Tournoi.class);
+        List<Tournoi> tournoiList = query.getResultList();
+        System.out.println("Liste d'épreuves obtenue avec succès");
         return tournoiList;
     }
+
 }
