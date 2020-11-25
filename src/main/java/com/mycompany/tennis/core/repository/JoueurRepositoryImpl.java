@@ -5,10 +5,10 @@ import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class JoueurRepositoryImpl {
@@ -42,14 +42,14 @@ public class JoueurRepositoryImpl {
 
     public void changeSexe(Long idJ, char nouveauSexe) {
         Joueur joueur = null;
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        EntityTransaction tx = null;
 
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
-//            joueur = session.get(Joueur.class, idJ);
-            Joueur joueurPersistent = (Joueur) session.merge(joueur);
+            tx = em.getTransaction();
+            tx.begin();
+            joueur = em.find(Joueur.class, idJ);
+            Joueur joueurPersistent = (Joueur) em.merge(joueur);
             joueur.setSexe(nouveauSexe);
             System.out.println(" Sexe du joueur modifié ");
             tx.commit();
@@ -59,8 +59,8 @@ public class JoueurRepositoryImpl {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
@@ -100,10 +100,10 @@ public class JoueurRepositoryImpl {
     public Joueur getById(Long idJ) {
 
         Joueur joueur = null;
-        Session session = null;
+        EntityManager em= null;
 
-        session = HibernateUtil.getSessionFactory().getCurrentSession();
-        joueur = session.get(Joueur.class, idJ);
+        em = EntityManagerHolder.getCurrentEntityManager();
+        joueur = em.find(Joueur.class, idJ);
         System.out.println("Joueur lu avec succès");
 
         return joueur;
@@ -111,19 +111,22 @@ public class JoueurRepositoryImpl {
 
     public List<Joueur> getAll() {
 
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        Query<Joueur> query = session.createQuery("select j from Joueur j ", Joueur.class);
-        List<Joueur> joueurs =query.getResultList();
+        EntityManager em= null;
+
+        em = EntityManagerHolder.getCurrentEntityManager();
+        TypedQuery<Joueur> query = em.createQuery("select j from Joueur j ", Joueur.class);
+        List<Joueur> joueurs = query.getResultList();
         System.out.println("Liste de joueurs obtenue avec succès");
 
         return joueurs;
     }
+
     public List<Joueur> getAllBySexe(char sexe) {
 
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        Query<Joueur> query = session.createNamedQuery("given_sexe", Joueur.class);
+        EntityManager em=EntityManagerHolder.getCurrentEntityManager();
+        TypedQuery<Joueur> query = em.createNamedQuery("given_sexe", Joueur.class);
         query.setParameter(0, sexe);
-        List<Joueur> joueurs =query.getResultList();
+        List<Joueur> joueurs = query.getResultList();
         System.out.println("Liste de joueurs obtenue avec succès");
 
         return joueurs;

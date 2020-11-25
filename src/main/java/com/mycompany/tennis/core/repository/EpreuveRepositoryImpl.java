@@ -1,26 +1,27 @@
 package com.mycompany.tennis.core.repository;
 
-import com.mycompany.tennis.core.HibernateUtil;
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.entity.Epreuve;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class EpreuveRepositoryImpl {
 
 
     public Epreuve getById(Long idEpreuve) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        Epreuve epreuve = session.get(Epreuve.class, idEpreuve);
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        Epreuve epreuve = em.find(Epreuve.class, idEpreuve);
         System.out.println("Epreuve lue avec succès");
         return epreuve;
     }
 
     public List<Epreuve> getAll(String codeTournoi) {
 
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        Query<Epreuve> query = session.createQuery("select e from Epreuve e join fetch e.tournoi where e.tournoi.codeTournoi=?0", Epreuve.class);
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        TypedQuery<Epreuve> query = em.createQuery("select e from Epreuve e join fetch e.tournoi " +
+                "where e.tournoi.codeTournoi=?0", Epreuve.class);
         query.setParameter(0, codeTournoi);
         List<Epreuve> epreuves = query.getResultList();
         System.out.println("Liste d'épreuves obtenue avec succès");

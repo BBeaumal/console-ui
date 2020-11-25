@@ -23,13 +23,13 @@ public class JoueurService {
     public void createJoueur(Joueur joueur) {
 //        Session session = null;
 //        Transaction tx = null;
-        EntityManager em=null;
-        EntityTransaction tx=null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         try {
 //            session = HibernateUtil.getSessionFactory().getCurrentSession();
 //            tx = session.beginTransaction();
-            em= EntityManagerHolder.getCurrentEntityManager();
-            tx=em.getTransaction();
+            em = EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
             tx.begin();
             joueurRepository.create(joueur);
             tx.commit();
@@ -67,12 +67,13 @@ public class JoueurService {
     }
 
     public List<JoueurDTO> getListeJoueurs() {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         List<JoueurDTO> joueursDTO = new ArrayList<>();
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em = EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
             List<Joueur> joueurList = joueurRepository.getAll();
 
             for (Joueur joueur : joueurList) {
@@ -92,20 +93,21 @@ public class JoueurService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
         return joueursDTO;
     }
 
     public List<JoueurDTO> getListeParamJoueurs(char sexe) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         List<JoueurDTO> joueursDTO = new ArrayList<>();
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em=EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
             List<Joueur> joueurList = joueurRepository.getAllBySexe(sexe);
 
             for (Joueur joueur : joueurList) {
@@ -125,8 +127,8 @@ public class JoueurService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
         return joueursDTO;
