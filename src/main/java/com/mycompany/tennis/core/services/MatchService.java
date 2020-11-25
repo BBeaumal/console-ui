@@ -1,7 +1,7 @@
 package com.mycompany.tennis.core.services;
 
 import com.mycompany.tennis.core.DTO.*;
-import com.mycompany.tennis.core.HibernateUtil;
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.entity.Match;
 import com.mycompany.tennis.core.entity.Score;
@@ -9,8 +9,9 @@ import com.mycompany.tennis.core.repository.EpreuveRepositoryImpl;
 import com.mycompany.tennis.core.repository.JoueurRepositoryImpl;
 import com.mycompany.tennis.core.repository.MatchRepositoryImpl;
 import com.mycompany.tennis.core.repository.ScoreRepositoryImpl;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 public class MatchService {
 
@@ -29,12 +30,13 @@ public class MatchService {
     }
 
     public void deleteMatch(Long idM) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         Match match = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em= EntityManagerHolder.getCurrentEntityManager();
+            tx=em.getTransaction();
+            tx.begin();
 
             matchRepository.delete(idM);
 
@@ -45,8 +47,8 @@ public class MatchService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
@@ -58,12 +60,13 @@ public class MatchService {
     }
 
     public void createMatch(MatchDTO matchDTO) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         Match match = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+           em=EntityManagerHolder.getCurrentEntityManager();
+           tx=em.getTransaction();
+           tx.begin();
 
             match = new Match();
             match.setEpreuve(epreuveRepository.getById(matchDTO.getEpreuve().getIdEpreuve()));
@@ -87,19 +90,20 @@ public class MatchService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     public void tapisVert(Long idM) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         Match match = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em=EntityManagerHolder.getCurrentEntityManager();
+            tx=em.getTransaction();
+            tx.begin();
             match = matchRepository.getById(idM);
 
             Joueur ancienVainqueur = match.getVainqueur();
@@ -120,20 +124,21 @@ public class MatchService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     public MatchDTO getMatch(Long idM) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
         Match match = null;
         MatchDTO dto = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em=EntityManagerHolder.getCurrentEntityManager();
+            tx=em.getTransaction();
+            tx.begin();
             match = matchRepository.getById(idM);
 
             dto = new MatchDTO();
@@ -183,8 +188,8 @@ public class MatchService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
         return dto;

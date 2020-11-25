@@ -1,11 +1,12 @@
 package com.mycompany.tennis.core.services;
 
 import com.mycompany.tennis.core.DTO.*;
-import com.mycompany.tennis.core.HibernateUtil;
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.entity.Score;
 import com.mycompany.tennis.core.repository.ScoreRepositoryImpl;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 public class ScoreService {
 
@@ -16,12 +17,14 @@ public class ScoreService {
     }
 
     public void deleteScore(Long idS) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
+
         Score score = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em= EntityManagerHolder.getCurrentEntityManager();
+            tx=em.getTransaction();
+            tx.begin();
 
             scoreRepositoryImpl.delete(idS);
 
@@ -32,20 +35,22 @@ public class ScoreService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     public Score getScore(Long idS) {
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
+
         Score score = null;
         ScoreFullDTO dto = null;
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
+            em=EntityManagerHolder.getCurrentEntityManager();
+            tx=em.getTransaction();
+            tx.begin();
             score = scoreRepositoryImpl.getById(idS);
 
             dto = new ScoreFullDTO();
@@ -95,8 +100,8 @@ public class ScoreService {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
         return score;
