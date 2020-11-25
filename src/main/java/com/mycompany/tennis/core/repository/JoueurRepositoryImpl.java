@@ -1,10 +1,7 @@
 package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.EntityManagerHolder;
-import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -47,7 +44,6 @@ public class JoueurRepositoryImpl {
 
         try {
             tx = em.getTransaction();
-            tx.begin();
             joueur = em.find(Joueur.class, idJ);
             Joueur joueurPersistent = (Joueur) em.merge(joueur);
             joueur.setSexe(nouveauSexe);
@@ -67,14 +63,14 @@ public class JoueurRepositoryImpl {
 
     public void renameJoueur(Long idJ, String nouveauNom) {
         Joueur joueur = null;
-        Session session = null;
-        Transaction tx = null;
+        EntityManager em = null;
+        EntityTransaction tx = null;
 
         try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            tx = session.beginTransaction();
-//            joueur = session.get(Joueur.class, idJ);
-            Joueur joueurPersistent = (Joueur) session.merge(joueur);
+            em = EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
+            joueur = em.find(Joueur.class, idJ);
+            Joueur joueurPersistent = (Joueur) em.merge(joueur);
             joueur.setNom(nouveauNom);
             System.out.println(" Nom du joueur modifié ");
             tx.commit();
@@ -84,23 +80,23 @@ public class JoueurRepositoryImpl {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     public void delete(Long idJ) {
         Joueur joueur = getById(idJ);
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.delete(joueur);
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        em.remove(joueur);
         System.out.println("Joueur supprimé avec succès");
     }
 
     public Joueur getById(Long idJ) {
 
         Joueur joueur = null;
-        EntityManager em= null;
+        EntityManager em = null;
 
         em = EntityManagerHolder.getCurrentEntityManager();
         joueur = em.find(Joueur.class, idJ);
@@ -111,7 +107,7 @@ public class JoueurRepositoryImpl {
 
     public List<Joueur> getAll() {
 
-        EntityManager em= null;
+        EntityManager em = null;
 
         em = EntityManagerHolder.getCurrentEntityManager();
         TypedQuery<Joueur> query = em.createQuery("select j from Joueur j ", Joueur.class);
@@ -123,7 +119,7 @@ public class JoueurRepositoryImpl {
 
     public List<Joueur> getAllBySexe(char sexe) {
 
-        EntityManager em=EntityManagerHolder.getCurrentEntityManager();
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
         TypedQuery<Joueur> query = em.createNamedQuery("given_sexe", Joueur.class);
         query.setParameter(0, sexe);
         List<Joueur> joueurs = query.getResultList();
