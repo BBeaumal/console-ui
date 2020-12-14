@@ -104,45 +104,44 @@ public class JoueurRepositoryImpl {
         List<Joueur> joueurs = new ArrayList<>();
         EntityManager em = null;
         EntityTransaction tx = null;
-        try {
-            em = EntityManagerHolder.getCurrentEntityManager();
-            tx = em.getTransaction();
-            tx.begin();
+//        try {
+        em = EntityManagerHolder.getCurrentEntityManager();
+        tx = em.getTransaction();
+//            tx.begin();
 
-            TypedQuery<Joueur> query = em.createQuery("select j from Joueur j ", Joueur.class);
-            joueurs = query.getResultList();
-            System.out.println("Liste de joueurs obtenue avec succès");
+        TypedQuery<Joueur> query = em.createQuery("select j from Joueur j ", Joueur.class);
+        joueurs = query.getResultList();
+        System.out.println("Liste de joueurs obtenue avec succès");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (em != null) {
+//                em.close();
+//            }
+//        }
         return joueurs;
     }
 
     public List<Joueur> getAllBySexe(char sexe) {
         List<Joueur> joueurs = new ArrayList<>();
-        EntityManager em = null;
-        EntityTransaction tx = null;
-        try {
-            em = EntityManagerHolder.getCurrentEntityManager();
-            tx = em.getTransaction();
-            tx.begin();
-            TypedQuery<Joueur> query = em.createNamedQuery("given_sexe", Joueur.class);
-            query.setParameter(0, sexe);
-            joueurs = query.getResultList();
-            System.out.println("Liste de joueurs obtenue avec succès");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
+//        try {
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        EntityTransaction tx = em.getTransaction();
+//            tx.begin();
+        TypedQuery<Joueur> query = em.createNamedQuery("given_sexe", Joueur.class);
+        query.setParameter(0, sexe);
+        joueurs = query.getResultList();
+        System.out.println("Liste de joueurs obtenue avec succès");
+
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (em != null) {
+//                em.close();
+//            }
+//        }
         return joueurs;
     }
 }
