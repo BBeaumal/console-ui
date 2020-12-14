@@ -126,7 +126,7 @@ public class JoueurRepositoryImpl {
     public List<Joueur> getAllBySexe(char sexe) {
         List<Joueur> joueurs = new ArrayList<>();
 
-//        try {
+//        esstry {
         EntityManager em = EntityManagerHolder.getCurrentEntityManager();
         EntityTransaction tx = em.getTransaction();
 //            tx.begin();
