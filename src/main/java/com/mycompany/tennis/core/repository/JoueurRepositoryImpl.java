@@ -23,13 +23,11 @@ public class JoueurRepositoryImpl {
 //            session.persist(joueur);
             tx = em.getTransaction();
             em.persist(joueur);
-            tx.commit(); //declenche l'ajout d'un ou plusieurs elements -> synchronisation de la session et de la BDD
+            //declenche l'ajout d'un ou plusieurs elements -> synchronisation de la session et de la BDD
 
             System.out.println("Joueur créé avec succès");
         } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
+
             e.printStackTrace();
         } finally {
             if (em != null) {
@@ -49,11 +47,9 @@ public class JoueurRepositoryImpl {
             Joueur joueurPersistent = (Joueur) em.merge(joueur);
             joueur.setSexe(nouveauSexe);
             System.out.println(" Sexe du joueur modifié ");
-            tx.commit();
+
         } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
+
             e.printStackTrace();
         } finally {
             if (em != null) {
@@ -74,11 +70,9 @@ public class JoueurRepositoryImpl {
             Joueur joueurPersistent = (Joueur) em.merge(joueur);
             joueur.setNom(nouveauNom);
             System.out.println(" Nom du joueur modifié ");
-            tx.commit();
+
         } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
+
             e.printStackTrace();
         } finally {
             if (em != null) {
@@ -118,11 +112,8 @@ public class JoueurRepositoryImpl {
             TypedQuery<Joueur> query = em.createQuery("select j from Joueur j ", Joueur.class);
             joueurs = query.getResultList();
             System.out.println("Liste de joueurs obtenue avec succès");
-            tx.commit();
+
         } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
             e.printStackTrace();
         } finally {
             if (em != null) {
@@ -144,11 +135,8 @@ public class JoueurRepositoryImpl {
             query.setParameter(0, sexe);
             joueurs = query.getResultList();
             System.out.println("Liste de joueurs obtenue avec succès");
-            tx.commit();
+
         } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
             e.printStackTrace();
         } finally {
             if (em != null) {

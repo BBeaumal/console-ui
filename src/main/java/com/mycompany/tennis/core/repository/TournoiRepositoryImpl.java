@@ -23,12 +23,10 @@ public class TournoiRepositoryImpl {
 
             tx = em.getTransaction();
             em.persist(tournoi);
-            tx.commit();
+
             System.out.println("Tournoi créé avec succès");
         } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
+
             e.printStackTrace();
         } finally {
             if (em != null) {
