@@ -120,10 +120,10 @@ public class JoueurService {
 
             tx.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             if (tx != null) {
                 tx.rollback();
             }
-            e.printStackTrace();
         } finally {
             if (em != null) {
                 em.close();
